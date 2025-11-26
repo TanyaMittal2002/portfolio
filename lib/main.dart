@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+const resumeDownloadUrl = 'https://drive.google.com/uc?export=download&id=1oLvNMtq6gUgPthxO8x90ACJfLS1rDRoI';
 void main() => runApp(const PortfolioApp());
 
 final themeModeNotifier = ValueNotifier(ThemeMode.system);
@@ -62,10 +63,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final AnimationController _introController;
+  late final ScrollController _scrollController;
+  final _resumeSectionKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _introController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -76,6 +80,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     _introController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -84,6 +89,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.vertical),
             child: Padding(
@@ -95,7 +101,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _AppLogo(),
-                      _TopActions(),
+                      _TopActions(onResumeTap: _scrollToResumeSection),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -136,6 +142,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 28),
+                  ResumeSection(key: _resumeSectionKey),
+                  const SizedBox(height: 28),
                   const ContactSection(),
                   const SizedBox(height: 36),
                   const Footer(),
@@ -146,6 +154,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
       ),
     );
+  }
+
+  Future<void> _scrollToResumeSection() async {
+    final context = _resumeSectionKey.currentContext;
+    if (context != null) {
+      await Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 }
 
@@ -225,6 +244,10 @@ class _AppLogo extends StatelessWidget {
 }
 
 class _TopActions extends StatelessWidget {
+  final VoidCallback onResumeTap;
+
+  const _TopActions({required this.onResumeTap});
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -240,6 +263,13 @@ class _TopActions extends StatelessWidget {
           onPressed: () => _openUrl('https://www.linkedin.com/'),
           icon: const Icon(Icons.business),
           tooltip: 'LinkedIn',
+        ),
+        TextButton(
+          onPressed: onResumeTap,
+          child: Text(
+            'Resume',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
         ),
 
         // 🌙 / ☀️ THEME TOGGLE BUTTON
@@ -346,31 +376,7 @@ class _HeroText extends StatelessWidget {
           "I craft smooth, modern Flutter applications with\nclean architecture, animations and beautiful UI.",
           style: GoogleFonts.inter(fontSize: 16, height: 1.5, color: Colors.black54),
         ),
-        const SizedBox(height: 26),
 
-        Wrap(
-          spacing: 14,
-          children: [
-            ElevatedButton(
-              onPressed: () => _openUrl("mailto:youremail@gmail.com"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5B6EF5),
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              child: Text("Hire Me", style: GoogleFonts.poppins(fontSize: 14)),
-            ),
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                side: const BorderSide(color: Color(0xFF5B6EF5), width: 1.6),
-              ),
-              child: Text("Projects", style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF5B6EF5))),
-            ),
-          ],
-        )
       ],
     );
   }
@@ -853,6 +859,69 @@ class _TimelineItem extends StatelessWidget {
   }
 }
 
+class ResumeSection extends StatelessWidget {
+  const ResumeSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Glassmorphism(
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionTitle(title: 'Resume'),
+            const SizedBox(height: 12),
+            Text(
+              'View or download my latest resume with one tap.',
+              style: GoogleFonts.inter(fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 10,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.download_rounded, size: 18),
+                  onPressed: () => _confirmResumeDownload(context),
+                  label: const Text('Download Resume', style: TextStyle(color: Colors.white),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5B6EF5),
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmResumeDownload(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Download resume?'),
+        content: const Text('Grab a copy of the latest PDF.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              _openUrl(resumeDownloadUrl);
+            },
+            child: const Text('Download'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
 
@@ -963,7 +1032,7 @@ class ResponsiveLayout extends StatelessWidget {
 // helper to open urls
 Future<void> _openUrl(String url) async {
   final uri = Uri.parse(url);
-  if (!await launchUrl(uri)) {
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
     // ignore: avoid_print
     print('Could not launch $url');
   }
