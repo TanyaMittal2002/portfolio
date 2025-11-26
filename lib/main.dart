@@ -36,6 +36,7 @@ class PortfolioApp extends StatelessWidget {
           ),
           themeMode: mode, // 👈 controlled by toggle
           home: const HomePage(),
+
         );
       },
     );
