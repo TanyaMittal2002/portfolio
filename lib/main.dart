@@ -1,7 +1,5 @@
 
 import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -25,12 +23,24 @@ class PortfolioApp extends StatelessWidget {
           theme: ThemeData(
             brightness: Brightness.light,
             textTheme: GoogleFonts.interTextTheme(),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF5B6EF5),
+              secondary: Color(0xFFFF8F3C),
+              onBackground: Colors.black87,
+              onSurface: Colors.black87,
+            ),
             scaffoldBackgroundColor: const Color(0xFFF7F7FC),
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
             textTheme: GoogleFonts.interTextTheme(
               ThemeData(brightness: Brightness.dark).textTheme,
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFF5B6EF5),
+              secondary: Color(0xFFFF8F3C),
+              onBackground: Colors.white,
+              onSurface: Colors.white70,
             ),
             scaffoldBackgroundColor: const Color(0xFF0E0E12),
           ),
@@ -139,6 +149,56 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 }
 
+class _AnimatedBackground extends StatefulWidget {
+  const _AnimatedBackground();
+
+  @override
+  State<_AnimatedBackground> createState() => _AnimatedBackgroundState();
+}
+
+class _AnimatedBackgroundState extends State<_AnimatedBackground>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF5B6EF5).withOpacity(0.15 + _controller.value * 0.1),
+                const Color(0xFFFF8F3C).withOpacity(0.12),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
 // Simple app logo
 class _AppLogo extends StatelessWidget {
   @override
@@ -199,7 +259,7 @@ class _TopActions extends StatelessWidget {
               backgroundColor: const Color(0xFF5B6EF5),
               shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
-          child: const Text('Hire Me'),
+          child:  Text('Hire Me', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
         ),
       ],
     );
@@ -231,7 +291,6 @@ class _IntroCard extends StatelessWidget {
   final bool centered;
   const _IntroCard({this.centered = false});
 
-  @override
   @override
   Widget build(BuildContext context) {
     final nameStyle = GoogleFonts.poppins(
@@ -294,22 +353,68 @@ class _IntroCard extends StatelessWidget {
       ),
     );
   }
-
 }
 
-class _ProfileAnimation extends StatelessWidget {
+class _ProfileAnimation extends StatefulWidget {
+  @override
+  State<_ProfileAnimation> createState() => _ProfileAnimationState();
+}
+
+class _ProfileAnimationState extends State<_ProfileAnimation>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _floatCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _floatCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _floatCtrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Glassmorphism(
-      child: SizedBox(
-        height: 260,
-        child: Center(
-          child: Lottie.asset('assets/animations/intro.json', width: 220, height: 220, fit: BoxFit.contain),
+    return AnimatedBuilder(
+      animation: _floatCtrl,
+      builder: (_, child) {
+        return Transform.translate(
+          offset: Offset(0, -10 * _floatCtrl.value),
+          child: child,
+        );
+      },
+      child: Glassmorphism(
+        child: Container(
+          height: 260,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              width: 2,
+              color: Colors.white.withOpacity(0.28),
+            ),
+          ),
+          child: Center(
+            child: Lottie.asset(
+              'assets/animations/intro.json',
+              width: 220,
+              height: 220,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
       ),
     );
   }
 }
+
 
 // Reusable glass container with blur + border
 class Glassmorphism extends StatelessWidget {
@@ -386,26 +491,68 @@ class SkillsSection extends StatelessWidget {
   }
 }
 
-class _SkillCard extends StatelessWidget {
+class _SkillCard extends StatefulWidget {
   final String name;
   final double level;
   const _SkillCard({required this.name, required this.level});
 
   @override
+  State<_SkillCard> createState() => _SkillCardState();
+}
+
+class _SkillCardState extends State<_SkillCard>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _animCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _animCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) _animCtrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _animCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Glassmorphism(
-      child: Container(
-        width: 160,
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(value: level, minHeight: 8),
-            const SizedBox(height: 8),
-            Text('${(level * 100).toInt()}% experience', style: GoogleFonts.inter(fontSize: 12)),
-          ],
+    return FadeTransition(
+      opacity: _animCtrl,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.25),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: _animCtrl,
+          curve: Curves.easeOut,
+        )),
+        child: Glassmorphism(
+          child: Container(
+            width: 160,
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.name,
+                    style: GoogleFonts.poppins(
+                        fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(value: widget.level, minHeight: 8),
+                const SizedBox(height: 8),
+                Text('${(widget.level * 100).toInt()}% experience',
+                    style: GoogleFonts.inter(fontSize: 12)),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -418,9 +565,24 @@ class ProjectsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final projects = [
-      {'title': 'Stack61', 'desc': 'Inspection & tracking app', 'tech': 'Flutter, Firebase'},
-      {'title': 'Portfolio', 'desc': 'This portfolio app', 'tech': 'Flutter, Web'},
-      {'title': 'PipeFlow', 'desc': 'Industrial tools', 'tech': 'Flutter, SQLite'},
+      {
+        'title': 'Stack61',
+        'desc':
+        'Dynamic inspection & tracking app built with advanced state management (Provider, GetX, BLoC), optimized APIs, caching, and smooth UI/UX.',
+        'tech': 'Flutter, SQLite, REST APIs'
+      },
+      {
+        'title': 'Platform',
+        'desc':
+        'Designed modern UI screens, improved navigation flow, and integrated real-time data handling with scalable Flutter components.',
+        'tech': 'Flutter, Animations, Firebase'
+      },
+      {
+        'title': 'Pipetrack',
+        'desc':
+        'End-to-end app with secure authentication, efficient API handling, and offline-first features for reliable data management.',
+        'tech': 'Flutter, Secure APIs, Local Cache'
+      },
     ];
 
     return Column(
@@ -431,11 +593,18 @@ class ProjectsSection extends StatelessWidget {
         Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: projects.map((p) => _ProjectCard(title: p['title'] as String, description: p['desc'] as String, tech: p['tech'] as String)).toList(),
-        )
+          children: projects
+              .map((p) => _ProjectCard(
+            title: p['title'] as String,
+            description: p['desc'] as String,
+            tech: p['tech'] as String,
+          ))
+              .toList(),
+        ),
       ],
     );
   }
+
 }
 
 class _ProjectCard extends StatelessWidget {
@@ -511,8 +680,18 @@ class TimelineSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      {'company': 'Company A', 'role': 'Flutter Developer', 'duration': '2022 - Present', 'desc': 'Worked on Stack61 app.'},
-      {'company': 'Company B', 'role': 'Mobile Developer', 'duration': '2020 - 2022', 'desc': 'Built user-facing features.'},
+      {
+        'company': 'Petro IT Solutions',
+        'role': 'Flutter Developer (Full-Time)',
+        'duration': 'Jul 2023 – Present',
+        'desc': 'Working on Stack61 and Platform projects. Improved UI/UX, implemented key modules, optimized performance, and strengthened application stability.',
+      },
+      {
+        'company': 'Petro IT',
+        'role': 'Flutter Developer Intern',
+        'duration': 'Feb 2023 – Jul 2023',
+        'desc': 'Built UI components, handled bug fixes, learned production-level Flutter development and API integrations.',
+      },
     ];
 
     return Column(
@@ -520,46 +699,119 @@ class TimelineSection extends StatelessWidget {
       children: [
         SectionTitle(title: 'Experience'),
         const SizedBox(height: 12),
+
         Column(
-          children: items.map((it) => _TimelineItem(company: it['company'] as String, role: it['role'] as String, duration: it['duration'] as String, desc: it['desc'] as String)).toList(),
-        )
+          children: items.map((item) {
+            return TweenAnimationBuilder(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 600),
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: _TimelineItem(
+                company: item['company']!,
+                role: item['role']!,
+                duration: item['duration']!,
+                desc: item['desc']!,
+              ),
+            );
+          }).toList(),
+        ),
       ],
     );
   }
 }
 
 class _TimelineItem extends StatelessWidget {
-  final String company, role, duration, desc;
-  const _TimelineItem({required this.company, required this.role, required this.duration, required this.desc});
+  final String company;
+  final String role;
+  final String duration;
+  final String desc;
+
+  const _TimelineItem({
+    required this.company,
+    required this.role,
+    required this.duration,
+    required this.desc,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 18),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.grey.withOpacity(0.8),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          )
+        ],
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            children: [
-              Container(width: 12, height: 12, decoration: BoxDecoration(color: const Color(0xFF5B6EF5), shape: BoxShape.circle)),
-              Container(width: 2, height: 60, color: Colors.grey.withOpacity(0.3))
-            ],
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Glassmorphism(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('$role • $company', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 6),
-                  Text(duration, style: GoogleFonts.inter(fontSize: 12)),
-                  const SizedBox(height: 8),
-                  Text(desc, style: GoogleFonts.inter(fontSize: 13)),
-                ]),
-              ),
+          // Timeline dot
+          Container(
+            width: 12,
+            height: 12,
+            margin: const EdgeInsets.only(top: 4, right: 16),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
             ),
-          )
+          ),
+
+          // Content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  role,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  company,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  duration,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.white54,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  desc,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
