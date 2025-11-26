@@ -1,0 +1,12 @@
+[build]
+command = "bash netlify-build.sh"
+publish = "build/web"
+
+[build.environment]
+# Change this if you need a specific Flutter tag/branch (e.g. 3.22.2).
+FLUTTER_VERSION = "stable"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
