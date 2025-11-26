@@ -373,7 +373,8 @@ class _HeroText extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          "I craft smooth, modern Flutter applications with\nclean architecture, animations and beautiful UI.",
+          "I build modern, high-quality Flutter applications with smooth animations, clean architecture, and elegant UI. \n"
+        "I focus on performance, usability, and crafting experiences that feel fast, intuitive, and visually polished.",
           style: GoogleFonts.inter(fontSize: 16, height: 1.5, color: Colors.black54),
         ),
 
