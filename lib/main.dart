@@ -269,87 +269,122 @@ class _TopActions extends StatelessWidget {
 class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(
-      mobile: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _IntroCard(centered: true),
-        ],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF4B2EFF), Color(0xFF7A4DFF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
-      desktop: Row(
-        children: [
-          Expanded(child: _IntroCard()),
-          const SizedBox(width: 20),
-          Expanded(child: _ProfileAnimation()),
-        ],
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          padding: const EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(26),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 24,
+                offset: Offset(0, 10),
+              )
+            ],
+          ),
+          child: ResponsiveLayout(
+            mobile: Column(
+              children:  [
+                _HeroText(centered: true),
+                SizedBox(height: 22),
+                _HeroImage(),
+              ],
+            ),
+            desktop: Row(
+              children:  [
+                Expanded(flex: 6, child: _HeroText()),
+                SizedBox(width: 30),
+                Expanded(flex: 5, child: _HeroImage()),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _IntroCard extends StatelessWidget {
+class _HeroText extends StatelessWidget {
   final bool centered;
-  const _IntroCard({this.centered = false});
+  const _HeroText({this.centered = false});
 
   @override
   Widget build(BuildContext context) {
-    final nameStyle = GoogleFonts.poppins(
-      fontSize: 38,
-      fontWeight: FontWeight.w800,
-      height: 1.2,
-    );
+    return Column(
+      crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Hi, I'm Tanya!",
+          style: GoogleFonts.poppins(
+            fontSize: 34,
+            fontWeight: FontWeight.w700,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          "FLUTTER DEVELOPER",
+          style: GoogleFonts.poppins(
+            fontSize: 46,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF6737FF),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "I craft smooth, modern Flutter applications with\nclean architecture, animations and beautiful UI.",
+          style: GoogleFonts.inter(fontSize: 16, height: 1.5, color: Colors.black54),
+        ),
+        const SizedBox(height: 26),
 
-    final subStyle = GoogleFonts.inter(
-      fontSize: 17,
-      height: 1.5,
-      fontWeight: FontWeight.w500,
-    );
-
-    final bodyStyle = GoogleFonts.inter(
-      fontSize: 15.5,
-      height: 1.6,
-      color: Theme.of(context).brightness == Brightness.dark
-          ? Colors.white70
-          : Colors.black87,
-    );
-
-    return Glassmorphism(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment:
-          centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+        Wrap(
+          spacing: 14,
           children: [
-            Text('Hi, I\'m Tanya 👋', style: nameStyle),
-            const SizedBox(height: 10),
-
-            Text(
-              'Flutter Developer • Mobile & Web',
-              style: subStyle,
+            ElevatedButton(
+              onPressed: () => _openUrl("mailto:youremail@gmail.com"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF5B6EF5),
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: Text("Hire Me", style: GoogleFonts.poppins(fontSize: 14)),
             ),
-
-            const SizedBox(height: 18),
-
-            Text(
-              'I craft modern, smooth and visually rich Flutter applications — built with clean architecture, pixel-perfect UI, and delightful animations. \n\n'
-                  'My focus is always on performance, usability, and creating meaningful digital experiences.',
-              style: bodyStyle,
-            ),
-
-            const SizedBox(height: 20),
-
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _openUrl('mailto:youremail@example.com'),
-                  child: const Text('Contact'),
-                ),
-              ],
+            OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                side: const BorderSide(color: Color(0xFF5B6EF5), width: 1.6),
+              ),
+              child: Text("Projects", style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF5B6EF5))),
             ),
           ],
-        ),
+        )
+      ],
+    );
+  }
+}
+
+class _HeroImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: Image.asset(
+        "assets/images/panda.jpg",
+        fit: BoxFit.cover,
+        height: 360,
       ),
     );
   }
