@@ -1,11 +1,12 @@
-
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const resumeDownloadUrl = 'https://drive.google.com/uc?export=download&id=1oLvNMtq6gUgPthxO8x90ACJfLS1rDRoI';
+const resumeDownloadUrl =
+    'https://drive.google.com/uc?export=download&id=1oLvNMtq6gUgPthxO8x90ACJfLS1rDRoI';
 void main() => runApp(const PortfolioApp());
 
 final themeModeNotifier = ValueNotifier(ThemeMode.system);
@@ -47,7 +48,6 @@ class PortfolioApp extends StatelessWidget {
           ),
           themeMode: mode, // 👈 controlled by toggle
           home: const HomePage(),
-
         );
       },
     );
@@ -61,7 +61,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _introController;
   late final ScrollController _scrollController;
   final _resumeSectionKey = GlobalKey();
@@ -91,7 +92,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: SingleChildScrollView(
           controller: _scrollController,
           child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.vertical),
+            constraints: BoxConstraints(
+              minHeight:
+                  MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.vertical,
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: Column(
@@ -177,7 +182,6 @@ class _AnimatedBackground extends StatefulWidget {
 
 class _AnimatedBackgroundState extends State<_AnimatedBackground>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _controller;
 
   @override
@@ -206,7 +210,9 @@ class _AnimatedBackgroundState extends State<_AnimatedBackground>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF5B6EF5).withOpacity(0.15 + _controller.value * 0.1),
+                const Color(
+                  0xFF5B6EF5,
+                ).withOpacity(0.15 + _controller.value * 0.1),
                 const Color(0xFFFF8F3C).withOpacity(0.12),
               ],
             ),
@@ -216,7 +222,6 @@ class _AnimatedBackgroundState extends State<_AnimatedBackground>
     );
   }
 }
-
 
 // Simple app logo
 class _AppLogo extends StatelessWidget {
@@ -229,15 +234,33 @@ class _AppLogo extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            gradient: const LinearGradient(colors: [Color(0xFF5B6EF5), Color(0xFFFF8F3C)]),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 8, offset: const Offset(0,4))],
+            gradient: const LinearGradient(
+              colors: [Color(0xFF5B6EF5), Color(0xFFFF8F3C)],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.12),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Center(
-            child: Text('T', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+            child: Text(
+              'T',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 12),
-        Text('Tanya', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
+        Text(
+          'Tanya',
+          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }
@@ -277,8 +300,7 @@ class _TopActions extends StatelessWidget {
           tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
           icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
           onPressed: () {
-            themeModeNotifier.value =
-            isDark ? ThemeMode.light : ThemeMode.dark;
+            themeModeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
           },
         ),
 
@@ -286,10 +308,19 @@ class _TopActions extends StatelessWidget {
         ElevatedButton(
           onPressed: () => _openUrl('mailto:youremail@example.com'),
           style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF5B6EF5),
-              shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
-          child:  Text('Hire Me', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
+            backgroundColor: const Color(0xFF5B6EF5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: Text(
+            'Hire Me',
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
         ),
       ],
     );
@@ -320,19 +351,19 @@ class _HeroSection extends StatelessWidget {
                 color: Colors.black12,
                 blurRadius: 24,
                 offset: Offset(0, 10),
-              )
+              ),
             ],
           ),
           child: ResponsiveLayout(
             mobile: Column(
-              children:  [
+              children: [
                 _HeroText(centered: true),
                 SizedBox(height: 22),
                 _HeroImage(),
               ],
             ),
             desktop: Row(
-              children:  [
+              children: [
                 Expanded(flex: 6, child: _HeroText()),
                 SizedBox(width: 30),
                 Expanded(flex: 5, child: _HeroImage()),
@@ -352,7 +383,9 @@ class _HeroText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: centered
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Text(
           "Hi, I'm Tanya!",
@@ -374,24 +407,63 @@ class _HeroText extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           "I build modern, high-quality Flutter applications with smooth animations, clean architecture, and elegant UI. \n"
-        "I focus on performance, usability, and crafting experiences that feel fast, intuitive, and visually polished.",
-          style: GoogleFonts.inter(fontSize: 16, height: 1.5, color: Colors.black54),
+          "I focus on performance, usability, and crafting experiences that feel fast, intuitive, and visually polished.",
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            height: 1.5,
+            color: Colors.black54,
+          ),
         ),
-
       ],
     );
   }
 }
 
-class _HeroImage extends StatelessWidget {
+class _HeroImage extends StatefulWidget {
+  @override
+  State<_HeroImage> createState() => _HeroImageState();
+}
+
+class _HeroImageState extends State<_HeroImage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pandaController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pandaController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _pandaController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
-      child: Image.asset(
-        "assets/images/panda.jpg",
-        fit: BoxFit.cover,
-        height: 360,
+    return AnimatedBuilder(
+      animation: _pandaController,
+      builder: (_, child) {
+        final t = _pandaController.value;
+        final hop = -12 * sin(t * pi); // gentle hop
+        final waveTilt = 0.05 * sin(t * 2 * pi); // subtle wave tilt
+
+        return Transform.translate(
+          offset: Offset(0, hop.abs()),
+          child: Transform.rotate(angle: waveTilt, child: child),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
+        child: Image.asset(
+          "assets/images/panda.jpg",
+          fit: BoxFit.cover,
+          height: 360,
+        ),
       ),
     );
   }
@@ -404,7 +476,6 @@ class _ProfileAnimation extends StatefulWidget {
 
 class _ProfileAnimationState extends State<_ProfileAnimation>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _floatCtrl;
 
   @override
@@ -438,10 +509,7 @@ class _ProfileAnimationState extends State<_ProfileAnimation>
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              width: 2,
-              color: Colors.white.withOpacity(0.28),
-            ),
+            border: Border.all(width: 2, color: Colors.white.withOpacity(0.28)),
           ),
           child: Center(
             child: Lottie.asset(
@@ -457,18 +525,24 @@ class _ProfileAnimationState extends State<_ProfileAnimation>
   }
 }
 
-
 // Reusable glass container with blur + border
 class Glassmorphism extends StatelessWidget {
   final Widget child;
   final double borderRadius;
   final EdgeInsetsGeometry padding;
 
-  const Glassmorphism({required this.child, this.borderRadius = 20, this.padding = const EdgeInsets.all(0), super.key});
+  const Glassmorphism({
+    required this.child,
+    this.borderRadius = 20,
+    this.padding = const EdgeInsets.all(0),
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final bg = Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.35);
+    final bg = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.white.withOpacity(0.35);
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
@@ -479,7 +553,13 @@ class Glassmorphism extends StatelessWidget {
             color: bg,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(color: Colors.white.withOpacity(0.12)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0,6))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: child,
         ),
@@ -496,10 +576,7 @@ class _GlassSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Glassmorphism(
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(18.0), child: child),
     );
   }
 }
@@ -526,8 +603,15 @@ class SkillsSection extends StatelessWidget {
         Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: skills.map((s) => _SkillCard(name: s['name'] as String, level: s['level'] as double)).toList(),
-        )
+          children: skills
+              .map(
+                (s) => _SkillCard(
+                  name: s['name'] as String,
+                  level: s['level'] as double,
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }
@@ -544,7 +628,6 @@ class _SkillCard extends StatefulWidget {
 
 class _SkillCardState extends State<_SkillCard>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _animCtrl;
 
   @override
@@ -573,10 +656,7 @@ class _SkillCardState extends State<_SkillCard>
         position: Tween<Offset>(
           begin: const Offset(0, 0.25),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animCtrl,
-          curve: Curves.easeOut,
-        )),
+        ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)),
         child: Glassmorphism(
           child: Container(
             width: 160,
@@ -584,14 +664,20 @@ class _SkillCardState extends State<_SkillCard>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.name,
-                    style: GoogleFonts.poppins(
-                        fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(
+                  widget.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(value: widget.level, minHeight: 8),
                 const SizedBox(height: 8),
-                Text('${(widget.level * 100).toInt()}% experience',
-                    style: GoogleFonts.inter(fontSize: 12)),
+                Text(
+                  '${(widget.level * 100).toInt()}% experience',
+                  style: GoogleFonts.inter(fontSize: 12),
+                ),
               ],
             ),
           ),
@@ -610,20 +696,20 @@ class ProjectsSection extends StatelessWidget {
       {
         'title': 'Stack61',
         'desc':
-        'Dynamic inspection & tracking app built with advanced state management (Provider, GetX, BLoC), optimized APIs, caching, and smooth UI/UX.',
-        'tech': 'Flutter, SQLite, REST APIs'
+            'Dynamic inspection & tracking app built with advanced state management (Provider, GetX, BLoC), optimized APIs, caching, and smooth UI/UX.',
+        'tech': 'Flutter, SQLite, REST APIs',
       },
       {
         'title': 'Platform',
         'desc':
-        'Designed modern UI screens, improved navigation flow, and integrated real-time data handling with scalable Flutter components.',
-        'tech': 'Flutter, Animations, Firebase'
+            'Designed modern UI screens, improved navigation flow, and integrated real-time data handling with scalable Flutter components.',
+        'tech': 'Flutter, Animations, Firebase',
       },
       {
         'title': 'Pipetrack',
         'desc':
-        'End-to-end app with secure authentication, efficient API handling, and offline-first features for reliable data management.',
-        'tech': 'Flutter, Secure APIs, Local Cache'
+            'End-to-end app with secure authentication, efficient API handling, and offline-first features for reliable data management.',
+        'tech': 'Flutter, Secure APIs, Local Cache',
       },
     ];
 
@@ -636,24 +722,29 @@ class ProjectsSection extends StatelessWidget {
           spacing: 12,
           runSpacing: 12,
           children: projects
-              .map((p) => _ProjectCard(
-            title: p['title'] as String,
-            description: p['desc'] as String,
-            tech: p['tech'] as String,
-          ))
+              .map(
+                (p) => _ProjectCard(
+                  title: p['title'] as String,
+                  description: p['desc'] as String,
+                  tech: p['tech'] as String,
+                ),
+              )
               .toList(),
         ),
       ],
     );
   }
-
 }
 
 class _ProjectCard extends StatelessWidget {
   final String title;
   final String description;
   final String tech;
-  const _ProjectCard({required this.title, required this.description, required this.tech});
+  const _ProjectCard({
+    required this.title,
+    required this.description,
+    required this.tech,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -667,11 +758,23 @@ class _ProjectCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700)),
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Text(description, style: GoogleFonts.inter(fontSize: 14)),
                 const SizedBox(height: 12),
-                Text(tech, style: GoogleFonts.inter(fontSize: 12, fontStyle: FontStyle.italic)),
+                Text(
+                  tech,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -681,13 +784,20 @@ class _ProjectCard extends StatelessWidget {
   }
 }
 
-void _showProjectDetails(BuildContext context, String title, String desc, String tech) {
+void _showProjectDetails(
+  BuildContext context,
+  String title,
+  String desc,
+  String tech,
+) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Glassmorphism(
         child: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -695,7 +805,13 @@ void _showProjectDetails(BuildContext context, String title, String desc, String
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700)),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               const SizedBox(height: 12),
               Text(desc, style: GoogleFonts.inter(fontSize: 14)),
               const SizedBox(height: 12),
@@ -703,11 +819,17 @@ void _showProjectDetails(BuildContext context, String title, String desc, String
               const SizedBox(height: 12),
               Row(
                 children: [
-                  ElevatedButton(onPressed: () => _openUrl('https://github.com/'), child: const Text('View on GitHub')),
+                  ElevatedButton(
+                    onPressed: () => _openUrl('https://github.com/'),
+                    child: const Text('View on GitHub'),
+                  ),
                   const SizedBox(width: 8),
-                  OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Close'),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -726,13 +848,15 @@ class TimelineSection extends StatelessWidget {
         'company': 'Petro IT Solutions',
         'role': 'Flutter Developer (Full-Time)',
         'duration': 'Jul 2023 – Present',
-        'desc': 'Working on Stack61 and Platform projects. Improved UI/UX, implemented key modules, optimized performance, and strengthened application stability.',
+        'desc':
+            'Working on Stack61 and Platform projects. Improved UI/UX, implemented key modules, optimized performance, and strengthened application stability.',
       },
       {
         'company': 'Petro IT',
         'role': 'Flutter Developer Intern',
         'duration': 'Feb 2023 – Jul 2023',
-        'desc': 'Built UI components, handled bug fixes, learned production-level Flutter development and API integrations.',
+        'desc':
+            'Built UI components, handled bug fixes, learned production-level Flutter development and API integrations.',
       },
     ];
 
@@ -797,7 +921,7 @@ class _TimelineItem extends StatelessWidget {
             color: Colors.black.withOpacity(0.12),
             blurRadius: 12,
             offset: const Offset(0, 4),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -884,15 +1008,23 @@ class ResumeSection extends StatelessWidget {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.download_rounded, size: 18),
                   onPressed: () => _confirmResumeDownload(context),
-                  label: const Text('Download Resume', style: TextStyle(color: Colors.white),),
+                  label: const Text(
+                    'Download Resume',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF5B6EF5),
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -941,33 +1073,62 @@ class _ContactSectionState extends State<ContactSection> {
     return Glassmorphism(
       child: Padding(
         padding: const EdgeInsets.all(18.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SectionTitle(title: 'Contact'),
-          const SizedBox(height: 12),
-          Form(
-            key: _formKey,
-            child: Column(children: [
-              TextFormField(controller: _name, decoration: const InputDecoration(labelText: 'Name')),
-              const SizedBox(height: 8),
-              TextFormField(controller: _email, decoration: const InputDecoration(labelText: 'Email')),
-              const SizedBox(height: 8),
-              TextFormField(controller: _message, decoration: const InputDecoration(labelText: 'Message'), maxLines: 4),
-              const SizedBox(height: 12),
-              Row(children: [
-                ElevatedButton(onPressed: _sendMail, child: const Text('Send')),
-                const SizedBox(width: 8),
-                OutlinedButton(onPressed: () { _name.clear(); _email.clear(); _message.clear(); }, child: const Text('Clear'))
-              ])
-            ]),
-          )
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionTitle(title: 'Contact'),
+            const SizedBox(height: 12),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _name,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _email,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _message,
+                    decoration: const InputDecoration(labelText: 'Message'),
+                    maxLines: 4,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _sendMail,
+                        child: const Text('Send'),
+                      ),
+                      const SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: () {
+                          _name.clear();
+                          _email.clear();
+                          _message.clear();
+                        },
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void _sendMail() {
     final subject = Uri.encodeComponent('Portfolio contact from ${_name.text}');
-    final body = Uri.encodeComponent('${_message.text}\n\nFrom: ${_name.text} <${_email.text}>');
+    final body = Uri.encodeComponent(
+      '${_message.text}\n\nFrom: ${_name.text} <${_email.text}>',
+    );
     final mailto = 'mailto:youremail@example.com?subject=$subject&body=$body';
     _openUrl(mailto);
   }
@@ -979,7 +1140,10 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('© ${DateTime.now().year} Tanya • Built with Flutter', style: GoogleFonts.inter(fontSize: 13)),
+      child: Text(
+        '© ${DateTime.now().year} Tanya • Built with Flutter',
+        style: GoogleFonts.inter(fontSize: 13),
+      ),
     );
   }
 }
@@ -1005,28 +1169,30 @@ class SectionTitle extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           title,
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
+          style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ],
     );
   }
 }
 
-
 class ResponsiveLayout extends StatelessWidget {
   final Widget mobile;
   final Widget desktop;
-  const ResponsiveLayout({required this.mobile, required this.desktop, super.key});
+  const ResponsiveLayout({
+    required this.mobile,
+    required this.desktop,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > 900) return desktop;
-      return mobile;
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) return desktop;
+        return mobile;
+      },
+    );
   }
 }
 
