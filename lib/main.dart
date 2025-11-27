@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:my_portfolio/ai_chatbot/ai_chatbot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -99,75 +100,80 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight:
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight:
                   MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.vertical,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      MediaQuery.of(context).padding.vertical,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _AppLogo(),
-                      _TopActions(onResumeTap: _scrollToResumeSection),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _AppLogo(),
+                          _TopActions(onResumeTap: _scrollToResumeSection),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      AnimatedBuilder(
+                        animation: _introController,
+                        builder: (_, child) => Opacity(
+                          opacity: _introController.value,
+                          child: Transform.translate(
+                            offset: Offset(0, (1 - _introController.value) * 20),
+                            child: child,
+                          ),
+                        ),
+                        child: _HeroSection(),
+                      ),
+                      const SizedBox(height: 28),
+                      _GlassSection(
+                        child: ResponsiveLayout(
+                          mobile: Column(
+                            children: const [
+                              SkillsSection(),
+                              SizedBox(height: 20),
+                              ProjectsSection(),
+                              SizedBox(height: 20),
+                              TimelineSection(),
+                              SizedBox(height: 20),
+                            ],
+                          ),
+                          desktop: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Expanded(flex: 3, child: SkillsSection()),
+                              SizedBox(width: 18),
+                              Expanded(flex: 5, child: ProjectsSection()),
+                              SizedBox(width: 18),
+                              Expanded(flex: 4, child: TimelineSection()),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                      ResumeSection(key: _resumeSectionKey),
+                      const SizedBox(height: 28),
+                      const ContactSection(),
+                      const SizedBox(height: 36),
+                      const Footer(),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  AnimatedBuilder(
-                    animation: _introController,
-                    builder: (_, child) => Opacity(
-                      opacity: _introController.value,
-                      child: Transform.translate(
-                        offset: Offset(0, (1 - _introController.value) * 20),
-                        child: child,
-                      ),
-                    ),
-                    child: _HeroSection(),
-                  ),
-                  const SizedBox(height: 28),
-                  _GlassSection(
-                    child: ResponsiveLayout(
-                      mobile: Column(
-                        children: const [
-                          SkillsSection(),
-                          SizedBox(height: 20),
-                          ProjectsSection(),
-                          SizedBox(height: 20),
-                          TimelineSection(),
-                          SizedBox(height: 20),
-                        ],
-                      ),
-                      desktop: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Expanded(flex: 3, child: SkillsSection()),
-                          SizedBox(width: 18),
-                          Expanded(flex: 5, child: ProjectsSection()),
-                          SizedBox(width: 18),
-                          Expanded(flex: 4, child: TimelineSection()),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  ResumeSection(key: _resumeSectionKey),
-                  const SizedBox(height: 28),
-                  const ContactSection(),
-                  const SizedBox(height: 36),
-                  const Footer(),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          const AiChatBotButton(),
+        ],
       ),
     );
   }
