@@ -3,11 +3,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const resumeDownloadUrl =
     'https://drive.google.com/uc?export=download&id=1oLvNMtq6gUgPthxO8x90ACJfLS1rDRoI';
-void main() => runApp(const PortfolioApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://crjlbksyvqcdtrdnojmn.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyamxia3N5dnFjZHRyZG5vam1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTgzMjMsImV4cCI6MjA3OTc5NDMyM30.lMMds1pExY78zJOK8odbR75ZnxYBwCmskBkzW9l0mvA',
+  );
+
+  runApp(const PortfolioApp());
+}
+
 
 final themeModeNotifier = ValueNotifier(ThemeMode.system);
 
@@ -1063,74 +1074,112 @@ class ContactSection extends StatefulWidget {
 }
 
 class _ContactSectionState extends State<ContactSection> {
-  final _formKey = GlobalKey<FormState>();
-  final _name = TextEditingController();
-  final _email = TextEditingController();
-  final _message = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _messageCtrl = TextEditingController();
+  bool _loading = false;
+
+  Future<void> submitContact() async {
+    if (_nameCtrl.text.isEmpty ||
+        _emailCtrl.text.isEmpty ||
+        _messageCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    try {
+      final supabase = Supabase.instance.client;
+
+      await supabase.from('contacts').insert({
+        'name': _nameCtrl.text,
+        'email': _emailCtrl.text,
+        'message': _messageCtrl.text,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Message sent!")),
+      );
+
+      _nameCtrl.clear();
+      _emailCtrl.clear();
+      _messageCtrl.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+
+    setState(() => _loading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Glassmorphism(
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SectionTitle(title: 'Contact'),
-            const SizedBox(height: 12),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _name,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _email,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _message,
-                    decoration: const InputDecoration(labelText: 'Message'),
-                    maxLines: 4,
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: _sendMail,
-                        child: const Text('Send'),
-                      ),
-                      const SizedBox(width: 8),
-                      OutlinedButton(
-                        onPressed: () {
-                          _name.clear();
-                          _email.clear();
-                          _message.clear();
-                        },
-                        child: const Text('Clear'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: 'Contact Me'),
+        const SizedBox(height: 16),
 
-  void _sendMail() {
-    final subject = Uri.encodeComponent('Portfolio contact from ${_name.text}');
-    final body = Uri.encodeComponent(
-      '${_message.text}\n\nFrom: ${_name.text} <${_email.text}>',
+        // Name Input
+        TextField(
+          controller: _nameCtrl,
+          decoration: InputDecoration(
+            labelText: "Name",
+            border: OutlineInputBorder(),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Email Input
+        TextField(
+          controller: _emailCtrl,
+          decoration: InputDecoration(
+            labelText: "Email",
+            border: OutlineInputBorder(),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Message Input
+        TextField(
+          controller: _messageCtrl,
+          maxLines: 4,
+          decoration: InputDecoration(
+            labelText: "Message",
+            border: OutlineInputBorder(),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Submit Button
+        ElevatedButton(
+          onPressed: _loading ? null : submitContact,
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            backgroundColor: const Color(0xFF5B6EF5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: _loading
+              ? CircularProgressIndicator(color: Colors.white)
+              : Text(
+            "Send",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ],
     );
-    final mailto = 'mailto:youremail@example.com?subject=$subject&body=$body';
-    _openUrl(mailto);
   }
 }
 
