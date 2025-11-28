@@ -11,6 +11,7 @@ import '../widgets/footer.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/responsive_layout.dart';
 import '../widgets/top_actions.dart';
+import '../widgets/particle_background.dart';
 import '../ai_chatbot/ai_chatbot.dart';
 import '../ai_chatbot/chat_cta_section.dart';
 
@@ -51,6 +52,7 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       body: Stack(
         children: [
+          const Positioned.fill(child: ParticleBackground()),
           SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
