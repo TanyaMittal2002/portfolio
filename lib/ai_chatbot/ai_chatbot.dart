@@ -108,9 +108,24 @@ class _AiChatWindowState extends State<AiChatWindow> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primary = theme.colorScheme.primary;
+    final dialogColor =
+        isDark ? const Color(0xFF14141B).withOpacity(0.95) : Colors.white.withOpacity(0.95);
+    final dividerColor =
+        isDark ? Colors.white.withOpacity(0.08) : Colors.grey.shade300;
+    final botBubbleColor =
+        isDark ? Colors.white.withOpacity(0.08) : Colors.grey.shade300;
+    final botTextColor = isDark ? Colors.white : Colors.black87;
+    final inputFillColor =
+        isDark ? Colors.white.withOpacity(0.04) : Colors.white;
+    final inputBorderColor =
+        isDark ? Colors.white.withOpacity(0.12) : Colors.grey.shade200;
+
     return Dialog(
       insetPadding: const EdgeInsets.all(20),
-      backgroundColor: Colors.white.withAlpha((0.95 * 255).toInt()),
+      backgroundColor: dialogColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: 380,
@@ -127,6 +142,7 @@ class _AiChatWindowState extends State<AiChatWindow> {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 IconButton(
@@ -135,7 +151,7 @@ class _AiChatWindowState extends State<AiChatWindow> {
                 )
               ],
             ),
-            const Divider(),
+            Divider(color: dividerColor),
 
             // Messages
             Expanded(
@@ -148,21 +164,23 @@ class _AiChatWindowState extends State<AiChatWindow> {
 
                   return Align(
                     alignment:
-                    isUser ? Alignment.centerRight : Alignment.centerLeft,
+                        isUser ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 14,
+                      ),
                       decoration: BoxDecoration(
                         color: isUser
-                            ? const Color(0xFF5B6EF5)
-                            : Colors.grey.shade300,
+                            ? primary
+                            : botBubbleColor,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
                         msg["text"]!,
                         style: TextStyle(
-                          color: isUser ? Colors.white : Colors.black87,
+                          color: isUser ? Colors.white : botTextColor,
                           fontSize: 14,
                         ),
                       ),
@@ -180,10 +198,26 @@ class _AiChatWindowState extends State<AiChatWindow> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
+                    style: TextStyle(color: theme.colorScheme.onSurface),
+                    cursorColor: primary,
                     decoration: InputDecoration(
                       hintText: "Ask something...",
+                      hintStyle: TextStyle(
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                      filled: true,
+                      fillColor: inputFillColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: inputBorderColor),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: inputBorderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primary),
                       ),
                     ),
                     onSubmitted: sendMessage,
